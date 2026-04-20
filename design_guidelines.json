@@ -1,0 +1,114 @@
+{
+  "theme": "Light",
+  "archetype": "Archetype 4 (Swiss & High-Contrast) + Custom Blueprint (Bright Blue/White)",
+  "colors": {
+    "primary": "#1EA7E8",
+    "primary_hover": "#0284C7",
+    "primary_light": "#E0F2FE",
+    "background": "#F9FAFB",
+    "card_background": "#FFFFFF",
+    "text_primary": "#0F172A",
+    "text_secondary": "#475569",
+    "success": "#22C55E",
+    "success_bg": "#DCFCE7",
+    "error": "#EF4444",
+    "error_bg": "#FEE2E2",
+    "border": "#E2E8F0"
+  },
+  "typography": {
+    "font_heading": "Outfit",
+    "font_body": "Manrope",
+    "hierarchy": {
+      "h1": "text-4xl sm:text-5xl font-black tracking-tighter text-text_primary",
+      "h2": "text-2xl sm:text-3xl font-bold tracking-tight text-text_primary",
+      "h3": "text-lg sm:text-xl font-bold text-text_primary",
+      "body": "text-base font-medium text-text_secondary",
+      "label": "text-xs uppercase tracking-[0.1em] font-bold text-text_secondary"
+    },
+    "guidelines": "Do NOT use Inter for headings. Keep headings robust and technical. Outfit gives an aeronautical/engineering feel. Manrope for clean numerical data."
+  },
+  "layout_spacing": {
+    "container_padding": "p-4 md:p-8",
+    "gap_small": "gap-3",
+    "gap_medium": "gap-6",
+    "gap_large": "gap-8",
+    "card_radius": "rounded-2xl",
+    "button_radius": "rounded-xl",
+    "shadow_default": "shadow-sm",
+    "shadow_hover": "shadow-md",
+    "border_style": "border border-border/50",
+    "guidelines": "Optical alignment rules. Keep UI density high but legible. The interface must resemble a modern flight instrument—clean, white cards on gray backgrounds."
+  },
+  "pages": {
+    "landing_page": {
+      "layout": "Flex column centered. Full height.",
+      "elements": [
+        "HAL Logo and 'Made in India' Logo (Prominent, Top/Center)",
+        "App Title: 'Helicopter Performance System'",
+        "Massive Primary CTA: 'Proceed to Calculation' (bg-primary, rounded-xl, bold text)",
+        "Version/Status text at bottom."
+      ]
+    },
+    "calculations_page": {
+      "header": "Bright sky blue background (#1EA7E8), white text 'Helicopter Performance System', gear icon (settings) on right.",
+      "airframe_selector": "Horizontal scroll or flex grid of 3 cards (Chetak, Cheetah, Cheetal). Active state has a solid 2px blue border and light blue background (#E0F2FE).",
+      "inputs_section": {
+        "title": "Operational Inputs",
+        "style": "Vertical list of white cards. Each card contains an emoji/icon on the left, the input label, a numeric display, and a unit toggle pill (ft/m, °C/°F, kg/lb) aligned right.",
+        "multimodal": "Tapping input opens a custom drawer/modal with (1) Numpad, (2) Voice Dictation mic icon, (3) Handwriting Canvas."
+      },
+      "action_row": "Fixed or bottom-heavy layout with a large blue 'Compute Performance' rounded button."
+    },
+    "results_page": {
+      "header": "Bright sky blue background (#1EA7E8), white text 'Performance Results', back arrow on left.",
+      "status_banner": "Full width banner. If valid: Green (#22C55E) 'Within Limits / Operational Status: Normal'. If invalid: Red (#EF4444) 'Limit Exceeded'.",
+      "metric_cards": "2x2 Grid using 'The Control Room' grid logic. Cards: AUW Capability, Payload, Power Balance, Payload Margin. Include +/- percentages in green/red.",
+      "data_viz": "AUW VS ALTITUDE line chart (Recharts). Toggle between Graph and Table view using Lucide icons. Include Current (blue dot) vs Limit (red curve).",
+      "action_row": "Bottom sticky bar. Buttons: 'Reset' (White/Ghost), 'Recompute' (Blue Solid), 'Save Report' (Outline), 'Share PDF' (Outline)."
+    },
+    "settings_config": {
+      "layout": "Standard list layout.",
+      "features": "Formulas & defaults editor, SQLite db sync indicator, toggle themes/units globally."
+    }
+  },
+  "image_urls": {
+    "hal_logo": {
+      "url": "https://upload.wikimedia.org/wikipedia/en/thumb/9/99/Hindustan_Aeronautics_Limited_Logo.svg/1200px-Hindustan_Aeronautics_Limited_Logo.svg.png",
+      "fallback": "https://images.pexels.com/photos/15863044/pexels-photo-15863044.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "HAL India Logo. Use fallback only if Wikimedia URL fails."
+    },
+    "made_in_india_logo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Make_In_India.png/1200px-Make_In_India.png",
+      "fallback": "https://images.unsplash.com/photo-1635438747567-8244074a3180?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHxJbmRpYW4lMjBmbGFnfGVufDB8fHx8MTc3NjY3MDIyOXww&ixlib=rb-4.1.0&q=85",
+      "description": "Made in India Logo. Use fallback only if Wikimedia URL fails."
+    },
+    "helicopter_chetak": {
+      "url": "https://images.unsplash.com/photo-1758292581042-21a187fbbdd4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHwxfHxtaWxpdGFyeSUyMHV0aWxpdHklMjBoZWxpY29wdGVyfGVufDB8fHx8MTc3NjY3MDIwMXww&ixlib=rb-4.1.0&q=85",
+      "description": "Image for Chetak helicopter card."
+    },
+    "helicopter_cheetah": {
+      "url": "https://images.unsplash.com/photo-1759610314761-855c55114110?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHwyfHxtaWxpdGFyeSUyMHV0aWxpdHklMjBoZWxpY29wdGVyfGVufDB8fHx8MTc3NjY3MDIwMXww&ixlib=rb-4.1.0&q=85",
+      "description": "Image for Cheetah helicopter card."
+    },
+    "helicopter_cheetal": {
+      "url": "https://images.pexels.com/photos/5620366/pexels-photo-5620366.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Image for Cheetal helicopter card."
+    }
+  },
+  "component_instructions": {
+    "buttons": "Always explicitly set text color on hover. Primary button: hover:bg-[#0284C7] hover:text-white. Ensure adequate contrast.",
+    "inputs": "Do not use standard HTML <input> without heavy customization. Use custom white cards with rounded-xl, shadow-sm, and internal paddings. Unit toggles should act as segmented controls.",
+    "charts": "Use Recharts (or an equivalent React library compatible with your environment). Ensure line colors match the guidelines (Blue for current state, Red for limit boundary).",
+    "icons": "Use lucide-react. Standardize stroke-width to 2px. Size should be 20px (w-5 h-5) for standard list items, larger for empty states or banners."
+  },
+  "instructions_to_main_agent": [
+    "Strictly follow the 'Archetype 4 + Blueprint' color scheme. Do NOT introduce purples or teals.",
+    "All interactive elements and form inputs MUST include the 'data-testid' attribute (e.g., data-testid='compute-performance-button').",
+    "The environment specifies React/Tailwind/Shadcn UI. Implement the application using these tools. If expo-sqlite is requested but you are building for the Web, polyfill it gracefully using IndexedDB (e.g., standard localForage or localStorage fallback) to ensure the offline-first requirement is met.",
+    "Implement the 'Multi-modal Input' as a drawer/modal that displays 3 tabs or sections when an input is clicked: (1) Standard Numpad, (2) Handwriting Canvas (using an HTML Canvas component capturing strokes and simulating recognition), and (3) Voice input simulation.",
+    "For the PDF Export, use a library like 'jspdf' or 'html2canvas' + 'jspdf'. Include the 'HAL Report' heading in the output.",
+    "Ensure 'Inter' is NOT used for headings. Apply 'Outfit' for headers and 'Manrope' for body text. Add these via Google Fonts if not present.",
+    "The UI must EXACTLY mimic the spacing and layout structure provided. Ensure inputs have the label on the left and unit pills on the right.",
+    "Ensure 2x2 metric grids on the results page utilize dense spacing and utilize negative space effectively rather than massive empty cards."
+  ]
+}
