@@ -1,9 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ChevronRight, FolderClock, Settings as SettingsIcon } from 'lucide-react-native';
 import { COLORS, RADIUS, SPACING, SHADOW } from '../src/theme/theme';
+
+/**
+ * Landing page — HAL logo + Made in India + Proceed CTA.
+ *
+ * ⚑ LOGOS ARE LOCAL ASSETS — replace the two files below with your actual
+ *   logo artwork (no code changes needed). See assets/logos/README.md.
+ */
+const HAL_LOGO = require('../assets/logos/hal-logo.png');
+const MADE_IN_INDIA_LOGO = require('../assets/logos/made-in-india.png');
 
 export default function Landing() {
   const router = useRouter();
@@ -11,7 +20,6 @@ export default function Landing() {
   return (
     <SafeAreaView style={styles.root} testID="landing-screen">
       <ScrollView contentContainerStyle={styles.scroll} bounces={false}>
-        {/* Top sky panel */}
         <View style={styles.skyPanel}>
           <View style={styles.topBar}>
             <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/reports')} testID="open-reports-btn">
@@ -22,25 +30,20 @@ export default function Landing() {
             </TouchableOpacity>
           </View>
 
-          {/* HAL Logo badge (text-based; replace with bundled asset at deploy time) */}
+          {/* HAL Logo — replace assets/logos/hal-logo.png with real artwork */}
           <View style={styles.logoCard} testID="hal-logo">
-            <Text style={styles.halBig}>HAL</Text>
-            <Text style={styles.halSmall}>हिंदुस्तान</Text>
+            <Image source={HAL_LOGO} style={styles.halLogoImg} resizeMode="contain" />
           </View>
 
           <Text style={styles.appTitle} testID="landing-title">Helicopter Performance System</Text>
           <Text style={styles.appSub}>Hindustan Aeronautics Limited</Text>
 
-          {/* Made in India tricolour badge */}
-          <View style={styles.miiBadge} testID="made-in-india-logo">
-            <View style={[styles.miiBar, { backgroundColor: '#FF9933' }]} />
-            <View style={[styles.miiBar, { backgroundColor: '#FFFFFF' }]} />
-            <View style={[styles.miiBar, { backgroundColor: '#046A38' }]} />
-            <Text style={styles.miiText}>MADE IN INDIA</Text>
+          {/* Made in India — replace assets/logos/made-in-india.png with real artwork */}
+          <View style={styles.miiCard} testID="made-in-india-logo">
+            <Image source={MADE_IN_INDIA_LOGO} style={styles.miiImg} resizeMode="contain" />
           </View>
         </View>
 
-        {/* Main CTA card */}
         <View style={styles.card}>
           <Text style={styles.pillLabel}>OFFLINE · TABLET · MOBILE</Text>
           <Text style={styles.heading}>Aviation-Grade Performance Calculator</Text>
@@ -103,11 +106,10 @@ const styles = StyleSheet.create({
     width: 140, height: 140, borderRadius: 70,
     backgroundColor: '#fff', alignSelf: 'center', marginTop: SPACING.lg,
     alignItems: 'center', justifyContent: 'center',
-    borderWidth: 4, borderColor: '#FFD54F',
+    borderWidth: 3, borderColor: '#FFD54F',
     ...SHADOW,
   },
-  halBig: { fontSize: 40, fontWeight: '900', color: COLORS.primaryDark, letterSpacing: 4 },
-  halSmall: { fontSize: 10, fontWeight: '700', color: COLORS.textMuted, letterSpacing: 1, marginTop: 2 },
+  halLogoImg: { width: 110, height: 110 },
   appTitle: {
     color: '#fff', fontSize: 26, fontWeight: '900', textAlign: 'center',
     marginTop: SPACING.lg, letterSpacing: -0.5,
@@ -116,13 +118,12 @@ const styles = StyleSheet.create({
     color: '#E0F2FE', fontSize: 13, textAlign: 'center',
     fontWeight: '600', marginTop: 4, letterSpacing: 2, textTransform: 'uppercase',
   },
-  miiBadge: {
-    alignSelf: 'center', marginTop: SPACING.lg, flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#fff', borderRadius: 999, paddingHorizontal: 4, paddingVertical: 4, gap: 4,
+  miiCard: {
+    alignSelf: 'center', marginTop: SPACING.lg,
+    backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 12, paddingVertical: 8,
     ...SHADOW,
   },
-  miiBar: { width: 14, height: 14, borderRadius: 3, borderWidth: 1, borderColor: '#E2E8F0' },
-  miiText: { color: '#0F172A', fontWeight: '900', letterSpacing: 2, fontSize: 12, paddingHorizontal: 10 },
+  miiImg: { width: 150, height: 54 },
   card: {
     backgroundColor: COLORS.card, margin: SPACING.lg, borderRadius: RADIUS.lg, padding: SPACING.xl,
     ...SHADOW,

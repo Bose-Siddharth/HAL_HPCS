@@ -70,10 +70,17 @@ export default function Results() {
       const deviceId = await getDeviceId();
       const now = new Date();
       const stamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
-      const name = reportName || `${deviceId}_${stamp}`;
-      const r = buildReport(name);
-      await insertReport(r); // also persist when sharing
-      await generateAndSharePdf({ ...r, ...r.payload });
+      const name = reportName.trim() || `${deviceId}_${stamp}`;
+      // Share does NOT auto-save — only generates & shares the PDF.
+      await generateAndSharePdf({
+        name,
+        created_at: new Date().toISOString(),
+        aircraft,
+        inputs,
+        outputs,
+        units,
+        formulas,
+      });
       Toast.show({ type: 'success', text1: 'PDF ready', text2: 'Share sheet opened', position: 'top' });
     } catch (e) {
       Toast.show({ type: 'error', text1: 'PDF failed', text2: String(e?.message || e), position: 'top' });

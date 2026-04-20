@@ -7,7 +7,13 @@ import { Platform } from 'react-native';
  * and opens the native share sheet.
  */
 export const generateAndSharePdf = async (report) => {
-  const { name, created_at, aircraft, inputs, outputs, units } = report;
+  const name = report?.name || 'HAL_Report';
+  const createdAt = report?.created_at || new Date().toISOString();
+  const aircraft = report?.aircraft || {};
+  const inputs = report?.inputs || {};
+  const outputs = report?.outputs || {};
+  const units = report?.units || { altitude: 'ft', temperature: 'C', weight: 'kg', pressure: 'hPa' };
+
   const statusColor = outputs.status === 'FIT' ? '#22C55E' : '#EF4444';
   const statusText = outputs.status === 'FIT' ? 'WITHIN LIMITS / FIT TO FLY' : 'LIMIT EXCEEDED / NOT FIT TO FLY';
   const reasonsList = (outputs.reasons || []).map((r) => `<li>${r}</li>`).join('') || '<li>All parameters within safe envelope.</li>';
@@ -39,35 +45,35 @@ export const generateAndSharePdf = async (report) => {
     <div class="header">
       <h1>HAL Report</h1>
       <div class="sub">Hindustan Aeronautics Limited &middot; Helicopter Performance System</div>
-      <div class="sub">Report: <b>${name}</b> &middot; Generated: ${new Date(created_at).toLocaleString()}</div>
+      <div class="sub">Report: <b>${name}</b> &middot; Generated: ${new Date(createdAt).toLocaleString()}</div>
     </div>
 
     <div class="chip">${statusText}</div>
 
     <h2>Aircraft & Environment</h2>
     <table>
-      <tr><th>Aircraft Type</th><td>${aircraft.name}</td><th>MAUW</th><td>${aircraft.mauw} kg</td></tr>
-      <tr><th>Elevation</th><td>${inputs.elevation} ft</td><th>QNH</th><td>${inputs.qnh} hPa</td></tr>
-      <tr><th>Temperature (OAT)</th><td>${inputs.temperature} °C</td><th>Rated Power</th><td>${aircraft.ratedPowerSHP} shp</td></tr>
+      <tr><th>Aircraft Type</th><td>${aircraft.name || '-'}</td><th>MAUW</th><td>${aircraft.mauw || '-'} kg</td></tr>
+      <tr><th>Elevation</th><td>${inputs.elevation ?? '-'} ft</td><th>QNH</th><td>${inputs.qnh ?? '-'} hPa</td></tr>
+      <tr><th>Temperature (OAT)</th><td>${inputs.temperature ?? '-'} °C</td><th>Rated Power</th><td>${aircraft.ratedPowerSHP || '-'} shp</td></tr>
     </table>
 
     <h2>Weights (kg)</h2>
     <table>
-      <tr><th>AC Empty</th><td>${inputs.acWeight}</td><th>Crew</th><td>${inputs.crewWeight}</td></tr>
-      <tr><th>Fuel</th><td>${inputs.fuel}</td><th>Payload</th><td>${inputs.payload}</td></tr>
-      <tr><th>Additional Load</th><td>${inputs.additionalLoad}</td><th>All Up Weight</th><td><b>${outputs.AUW}</b></td></tr>
+      <tr><th>AC Empty</th><td>${inputs.acWeight ?? '-'}</td><th>Crew</th><td>${inputs.crewWeight ?? '-'}</td></tr>
+      <tr><th>Fuel</th><td>${inputs.fuel ?? '-'}</td><th>Load</th><td>${inputs.payload ?? '-'}</td></tr>
+      <tr><th>Additional Load</th><td>${inputs.additionalLoad ?? '-'}</td><th>All Up Weight</th><td><b>${outputs.AUW ?? '-'}</b></td></tr>
     </table>
 
     <h2>Computed Performance</h2>
     <div class="grid">
-      <div class="card"><div class="k">Pressure Altitude</div><div class="v">${outputs.PA} ft</div></div>
-      <div class="card"><div class="k">ISA Temperature</div><div class="v">${outputs.ISA_TEMP} °C</div></div>
-      <div class="card"><div class="k">Density Altitude</div><div class="v">${outputs.DENSITY_ALT} ft</div></div>
-      <div class="card"><div class="k">Air Density</div><div class="v">${outputs.DENSITY} kg/m³</div></div>
-      <div class="card"><div class="k">AB Temperature</div><div class="v">${outputs.AB_TEMP} °C</div></div>
-      <div class="card"><div class="k">All Up Weight</div><div class="v">${outputs.AUW} kg</div></div>
-      <div class="card"><div class="k">Power Available</div><div class="v">${outputs.POWER_AVAIL} shp</div></div>
-      <div class="card"><div class="k">Power Required</div><div class="v">${outputs.POWER_REQ} shp</div></div>
+      <div class="card"><div class="k">Pressure Altitude</div><div class="v">${outputs.PA ?? '-'} ft</div></div>
+      <div class="card"><div class="k">ISA Temperature</div><div class="v">${outputs.ISA_TEMP ?? '-'} °C</div></div>
+      <div class="card"><div class="k">Density Altitude</div><div class="v">${outputs.DENSITY_ALT ?? '-'} ft</div></div>
+      <div class="card"><div class="k">Air Density</div><div class="v">${outputs.DENSITY ?? '-'} kg/m³</div></div>
+      <div class="card"><div class="k">AB Temperature</div><div class="v">${outputs.AB_TEMP ?? '-'} °C</div></div>
+      <div class="card"><div class="k">All Up Weight</div><div class="v">${outputs.AUW ?? '-'} kg</div></div>
+      <div class="card"><div class="k">Power Available</div><div class="v">${outputs.POWER_AVAIL ?? '-'} shp</div></div>
+      <div class="card"><div class="k">Power Required</div><div class="v">${outputs.POWER_REQ ?? '-'} shp</div></div>
     </div>
 
     <h2>Fit-to-Fly Evaluation</h2>
@@ -77,10 +83,13 @@ export const generateAndSharePdf = async (report) => {
   </body>
   </html>`;
 
-  const { uri } = await Print.printToFileAsync({ html, base64: false });
+  const printed = await Print.printToFileAsync({ html, base64: false });
+  const uri = printed && printed.uri ? printed.uri : null;
+  if (!uri) {
+    throw new Error('Failed to generate PDF file.');
+  }
 
   if (Platform.OS === 'web') {
-    // On web, trigger download of PDF via anchor (expo-print returns blob URL on web)
     if (typeof window !== 'undefined') {
       const a = document.createElement('a');
       a.href = uri;
@@ -92,9 +101,14 @@ export const generateAndSharePdf = async (report) => {
     return uri;
   }
 
-  const canShare = await Sharing.isAvailableAsync();
-  if (canShare) {
-    await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'Share HAL Report' });
+  try {
+    const canShare = await Sharing.isAvailableAsync();
+    if (canShare) {
+      await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'Share HAL Report' });
+    }
+  } catch (e) {
+    // Sharing user-cancel or unavailable — not fatal; PDF file was generated.
+    console.warn('Sharing failed:', e);
   }
   return uri;
 };

@@ -29,14 +29,14 @@ export const AppStateProvider = ({ children }) => {
     pressure: 'hPa',
   });
   const [inputs, setInputsState] = useState({
-    elevation: 0,
-    qnh: 1013.25,
-    temperature: 15,
-    acWeight: DEFAULT_AIRCRAFT.chetak.emptyWeight,
-    crewWeight: DEFAULT_AIRCRAFT.chetak.defaultCrew,
-    fuel: DEFAULT_AIRCRAFT.chetak.defaultFuel,
-    additionalLoad: DEFAULT_AIRCRAFT.chetak.defaultAddLoad,
-    payload: DEFAULT_AIRCRAFT.chetak.defaultPayload,
+    elevation: null,
+    qnh: null,
+    temperature: null,
+    acWeight: null,
+    crewWeight: null,
+    fuel: null,
+    additionalLoad: null,
+    payload: null,
   });
 
   useEffect(() => {
@@ -45,17 +45,7 @@ export const AppStateProvider = ({ children }) => {
         const [ad, f] = await Promise.all([loadAircraftDefaults(), loadFormulas()]);
         setAircraftDefaults(ad);
         setFormulas(f);
-        const d = ad[selectedAircraftId];
-        setInputsState({
-          elevation: d.defaultElevation,
-          qnh: d.defaultQNH,
-          temperature: d.defaultTemp,
-          acWeight: d.emptyWeight,
-          crewWeight: d.defaultCrew,
-          fuel: d.defaultFuel,
-          additionalLoad: d.defaultAddLoad,
-          payload: d.defaultPayload,
-        });
+        // Do NOT auto-fill input fields — user explicitly wants blank inputs.
       } catch (e) {
         console.warn('DB load failed, using defaults', e);
       } finally {
@@ -65,19 +55,11 @@ export const AppStateProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Refresh inputs when aircraft selection changes
+  // When the aircraft changes, keep inputs blank (user enters everything).
   useEffect(() => {
     if (!ready) return;
-    const d = aircraftDefaults[selectedAircraftId];
-    setInputsState((prev) => ({
-      ...prev,
-      acWeight: d.emptyWeight,
-      crewWeight: d.defaultCrew,
-      fuel: d.defaultFuel,
-      additionalLoad: d.defaultAddLoad,
-      payload: d.defaultPayload,
-    }));
-  }, [selectedAircraftId, aircraftDefaults, ready]);
+    // intentionally no auto-fill
+  }, [selectedAircraftId, ready]);
 
   const setInputs = (v) => setInputsState((prev) => ({ ...prev, ...v }));
 
@@ -94,16 +76,15 @@ export const AppStateProvider = ({ children }) => {
   };
 
   const resetInputsToDefaults = () => {
-    const d = aircraftDefaults[selectedAircraftId];
     setInputsState({
-      elevation: d.defaultElevation,
-      qnh: d.defaultQNH,
-      temperature: d.defaultTemp,
-      acWeight: d.emptyWeight,
-      crewWeight: d.defaultCrew,
-      fuel: d.defaultFuel,
-      additionalLoad: d.defaultAddLoad,
-      payload: d.defaultPayload,
+      elevation: null,
+      qnh: null,
+      temperature: null,
+      acWeight: null,
+      crewWeight: null,
+      fuel: null,
+      additionalLoad: null,
+      payload: null,
     });
   };
 

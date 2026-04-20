@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
 import Toast from 'react-native-toast-message';
@@ -12,6 +12,7 @@ export default function Reports() {
   const router = useRouter();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [confirmId, setConfirmId] = useState(null);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -26,17 +27,23 @@ export default function Reports() {
   useFocusEffect(useCallback(() => { refresh(); }, [refresh]));
   useEffect(() => { refresh(); }, [refresh]);
 
+  const performDelete = async (id) => {
+    await deleteReport(id);
+    setConfirmId(null);
+    Toast.show({ type: 'success', text1: 'Deleted', position: 'top' });
+    refresh();
+  };
+
   const doDelete = (id) => {
-    Alert.alert('Delete report?', 'This cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete', style: 'destructive', onPress: async () => {
-          await deleteReport(id);
-          Toast.show({ type: 'success', text1: 'Deleted', position: 'top' });
-          refresh();
-        },
-      },
-    ]);
+    // Use a custom cross-platform modal — Alert.alert callbacks don't fire on web.
+    if (Platform.OS === 'web') {
+      setConfirmId(id);
+    } else {
+      Alert.alert('Delete report?', 'This cannot be undone.', [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: () => performDelete(id) },
+      ]);
+    }
   };
 
   const doShare = async (r) => {
@@ -152,4 +159,8 @@ const styles = StyleSheet.create({
   btnPrimaryText: { color: '#fff', fontWeight: '800' },
   btnGhost: { backgroundColor: '#fff', borderWidth: 1, borderColor: COLORS.border },
   btnGhostText: { color: COLORS.error, fontWeight: '800' },
+  modalBack: { flex: 1, backgroundColor: 'rgba(15,23,42,0.5)', justifyContent: 'center', padding: SPACING.xl },
+  modalCard: { backgroundColor: '#fff', borderRadius: RADIUS.lg, padding: SPACING.lg },
+  modalTitle: { fontSize: 18, fontWeight: '900', color: COLORS.text },
+  modalSub: { color: COLORS.textMuted, marginTop: 4 },
 });

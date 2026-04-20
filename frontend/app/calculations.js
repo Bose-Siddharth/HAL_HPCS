@@ -51,8 +51,9 @@ export default function Calculations() {
   };
 
   const display = (val, unit) => {
+    if (val === null || val === undefined || val === '') return '';
     const n = fromBaseUnit(val, unit);
-    return isFinite(n) ? (Math.round(n * 100) / 100).toString() : '—';
+    return isFinite(n) ? (Math.round(n * 100) / 100).toString() : '';
   };
 
   const airframes = ['chetak', 'cheetah', 'cheetal'];
@@ -165,12 +166,12 @@ export default function Calculations() {
           />
           <InputRow
             Icon={Package}
-            label="Payload"
+            label="Load"
             value={display(inputs.payload, units.weight)}
             unit={units.weight}
             unitOptions={['kg', 'lb']}
             onUnitChange={(u) => setUnit('weight', u)}
-            onPress={() => openDrawer('payload', 'Payload', units.weight, display(inputs.payload, units.weight))}
+            onPress={() => openDrawer('payload', 'Load', units.weight, display(inputs.payload, units.weight))}
             testID="input-payload"
           />
           <InputRow
@@ -241,7 +242,11 @@ function InputRow({ Icon, label, value, unit, unitOptions, unitLabels, onUnitCha
       </View>
       <TouchableOpacity style={styles.inputRow} onPress={onPress} activeOpacity={0.8} testID={testID}>
         <Icon size={20} color={COLORS.primaryDark} />
-        <Text style={styles.inputValue}>{value || '—'}</Text>
+        {value ? (
+          <Text style={styles.inputValue}>{value}</Text>
+        ) : (
+          <Text style={styles.inputPlaceholder}>Enter value</Text>
+        )}
         <Text style={styles.inputUnit}>{unit}</Text>
       </TouchableOpacity>
     </View>
@@ -295,6 +300,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md, padding: SPACING.md, gap: SPACING.md, ...SHADOW,
   },
   inputValue: { flex: 1, fontSize: 18, fontWeight: '700', color: COLORS.text },
+  inputPlaceholder: { flex: 1, fontSize: 16, fontWeight: '500', color: '#94A3B8' },
   inputUnit: { color: COLORS.textMuted, fontWeight: '700' },
   previewGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
   previewCell: {
