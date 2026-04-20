@@ -1,0 +1,27 @@
+import React from 'react';
+import { Stack } from 'expo-router';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { StatusBar } from 'expo-status-bar';
+import Toast from 'react-native-toast-message';
+import { AppStateProvider } from '../src/store/AppState';
+
+export default function RootLayout() {
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <AppStateProvider>
+          <StatusBar style="light" />
+          <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="calculations" />
+            <Stack.Screen name="results" />
+            <Stack.Screen name="reports" />
+            <Stack.Screen name="settings" />
+          </Stack>
+          <Toast />
+        </AppStateProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
+  );
+}
