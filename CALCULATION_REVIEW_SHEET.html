@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>HAL Helicopter Performance — Calculation Review Sheet</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; background: #F5F7FB; color: #0F172A;
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 12px; line-height: 1.45;
+  }
+  .page {
+    max-width: 820px; margin: 20px auto; padding: 32px 36px;
+    background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-top: 6px solid #1EA7E8;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -0.3px; }
+  h2 {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 1.6px;
+    color: #64748B; margin: 26px 0 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px;
+  }
+  .sub { color: #64748B; font-size: 11px; margin-top: 2px; }
+  .meta {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px;
+    margin: 10px 0 22px; font-size: 11px; color: #334155;
+  }
+  .meta span { border: 1px dashed #CBD5E1; padding: 4px 10px; border-radius: 6px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  th, td {
+    padding: 7px 8px; text-align: left; border-bottom: 1px solid #E2E8F0;
+    vertical-align: top;
+  }
+  th {
+    background: #F1F5F9; font-weight: 700; font-size: 10.5px;
+    text-transform: uppercase; letter-spacing: 0.6px; color: #475569;
+  }
+  .chk { width: 26px; text-align: center; }
+  .chk-box {
+    display: inline-block; width: 14px; height: 14px;
+    border: 1.5px solid #0F172A; border-radius: 3px; vertical-align: middle;
+  }
+  .remark {
+    min-height: 22px; border-bottom: 1px dotted #94A3B8;
+    display: block; color: transparent;
+  }
+  .mono {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px; background: #F8FAFC; padding: 2px 5px; border-radius: 3px;
+    color: #0F172A;
+  }
+  .formula-block {
+    margin: 10px 0; padding: 10px 12px; border-left: 3px solid #1EA7E8;
+    background: #F8FAFC; border-radius: 4px;
+  }
+  .formula-block .title { font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+  .formula-block .vars { color: #64748B; font-size: 10.5px; margin-top: 3px; }
+  .formula-row { display: flex; gap: 10px; align-items: flex-start; }
+  .formula-row .cb { padding-top: 2px; }
+  .remarks-long {
+    border: 1px solid #E2E8F0; border-radius: 4px; padding: 6px 8px;
+    min-height: 40px; background: #FAFBFD;
+    font-size: 10.5px; color: #64748B;
+  }
+  .sig {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin-top: 28px; padding-top: 18px; border-top: 1px solid #E2E8F0;
+  }
+  .sig .line { border-bottom: 1px solid #0F172A; height: 28px; }
+  .sig .label { font-size: 10.5px; color: #64748B; margin-top: 4px; }
+  .foot { margin-top: 14px; font-size: 10px; color: #94A3B8; text-align: center; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .callout {
+    background: #FEF3C7; border-left: 3px solid #F59E0B;
+    padding: 8px 10px; font-size: 10.5px; color: #78350F;
+    border-radius: 4px; margin: 10px 0;
+  }
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0; max-width: none; }
+    h2 { break-after: avoid; }
+    table, .formula-block { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>HAL Helicopter Performance — Calculation Review Sheet</h1>
+  <div class="sub">Hindustan Aeronautics Limited · Offline Power Calculation App</div>
+
+  <div class="meta">
+    <span><b>Reviewer:</b> _______________________________</span>
+    <span><b>Designation:</b> ________________________</span>
+    <span><b>Date:</b> _______________</span>
+    <span><b>App Version:</b> v1.0.0</span>
+  </div>
+
+  <div class="callout">
+    <b>How to use this sheet:</b> For each value / formula, tick the checkbox if it is correct.
+    If it is wrong, leave the box unticked and write the corrected value or formula in the
+    <i>Remarks</i> column. Return the signed sheet to the development team.
+  </div>
+
+  <!-- ============ SECTION 1: AIRCRAFT DEFAULT VALUES ============ -->
+  <h2>1. Aircraft Default Values</h2>
+  <div class="sub">Source file: <span class="mono">src/config/logic.js → DEFAULT_AIRCRAFT</span></div>
+
+  <!-- 1A Chetak -->
+  <h2 style="border:none; margin:18px 0 4px; color:#0F172A; font-size:13px; text-transform:none; letter-spacing:0;">
+    1.1 &nbsp; Chetak
+  </h2>
+  <table>
+    <thead><tr>
+      <th class="chk">✓</th><th>Parameter</th><th style="width:80px">Unit</th>
+      <th style="width:100px">Default</th><th>Remarks / Corrected Value</th>
+    </tr></thead>
+    <tbody>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Empty Weight</td><td>lb</td><td>2 645</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Maximum All-Up Weight (MAUW)</td><td>lb</td><td>4 630</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Crew Weight</td><td>kg</td><td>180</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Fuel</td><td>litres</td><td>575</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Additional Load</td><td>kg</td><td>0</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Load (Pax + cargo)</td><td>kg</td><td>75</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Elevation</td><td>ft</td><td>0</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default QNH</td><td>mb</td><td>1 013</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Temperature (OAT)</td><td>°C</td><td>15</td><td class="remark"></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 1B Cheetah -->
+  <h2 style="border:none; margin:18px 0 4px; color:#0F172A; font-size:13px; text-transform:none; letter-spacing:0;">
+    1.2 &nbsp; Cheetah
+  </h2>
+  <table>
+    <thead><tr>
+      <th class="chk">✓</th><th>Parameter</th><th style="width:80px">Unit</th>
+      <th style="width:100px">Default</th><th>Remarks / Corrected Value</th>
+    </tr></thead>
+    <tbody>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Empty Weight</td><td>lb</td><td>2 469</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Maximum All-Up Weight (MAUW)</td><td>lb</td><td>4 299</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Crew Weight</td><td>kg</td><td>180</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Fuel</td><td>litres</td><td>500</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Additional Load</td><td>kg</td><td>0</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Load</td><td>kg</td><td>75</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Elevation</td><td>ft</td><td>0</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default QNH</td><td>mb</td><td>1 013</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Temperature (OAT)</td><td>°C</td><td>15</td><td class="remark"></td></tr>
+    </tbody>
+  </table>
+
+  <!-- 1C Cheetal -->
+  <h2 style="border:none; margin:18px 0 4px; color:#0F172A; font-size:13px; text-transform:none; letter-spacing:0;">
+    1.3 &nbsp; Cheetal
+  </h2>
+  <table>
+    <thead><tr>
+      <th class="chk">✓</th><th>Parameter</th><th style="width:80px">Unit</th>
+      <th style="width:100px">Default</th><th>Remarks / Corrected Value</th>
+    </tr></thead>
+    <tbody>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Empty Weight</td><td>lb</td><td>2 756</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Maximum All-Up Weight (MAUW)</td><td>lb</td><td>4 960</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Crew Weight</td><td>kg</td><td>180</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Fuel</td><td>litres</td><td>575</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Additional Load</td><td>kg</td><td>0</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Load</td><td>kg</td><td>75</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Elevation</td><td>ft</td><td>0</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default QNH</td><td>mb</td><td>1 013</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Default Temperature (OAT)</td><td>°C</td><td>15</td><td class="remark"></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============ SECTION 2: INPUT FIELD UNITS ============ -->
+  <h2>2. Input Field Units</h2>
+  <table>
+    <thead><tr>
+      <th class="chk">✓</th><th>Input Field</th><th style="width:120px">Primary Unit</th>
+      <th style="width:120px">Toggle</th><th>Remarks</th>
+    </tr></thead>
+    <tbody>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Elevation</td><td>ft</td><td>m</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>QNH</td><td>mb (hPa)</td><td>inHg</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Temperature</td><td>°C</td><td>°F</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>AC Weight</td><td>lb</td><td>—</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Crew Weight</td><td>kg</td><td>—</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Fuel</td><td>litres</td><td>—</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Additional Load</td><td>kg</td><td>—</td><td class="remark"></td></tr>
+      <tr><td class="chk"><span class="chk-box"></span></td><td>Load (Pax + cargo)</td><td>kg</td><td>—</td><td class="remark"></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============ SECTION 3: FORMULAS ============ -->
+  <h2>3. Calculation Formulas</h2>
+  <div class="sub">Source file: <span class="mono">src/config/logic.js → DEFAULT_FORMULAS</span>. Each formula is a plain-JS expression evaluated with the variables shown.</div>
+
+  <div class="formula-block">
+    <div class="formula-row">
+      <span class="cb chk-box"></span>
+      <div style="flex:1">
+        <div class="title">3.1  Pressure Altitude (PA) &mdash; output: ft</div>
+        <div class="mono">PA = elevation + (1013 − qnh) × 30</div>
+        <div class="vars">variables: <i>elevation</i> (ft), <i>qnh</i> (mb)</div>
+      </div>
+    </div>
+    <div class="remarks-long">Remarks / Corrected formula:</div>
+  </div>
+
+  <div class="formula-block">
+    <div class="formula-row">
+      <span class="cb chk-box"></span>
+      <div style="flex:1">
+        <div class="title">3.2  ISA Temperature &mdash; output: °C</div>
+        <div class="mono">ISA_TEMP = 15 − (elevation / 1000) × 2</div>
+        <div class="vars">variables: <i>elevation</i> (ft)</div>
+      </div>
+    </div>
+    <div class="remarks-long">Remarks / Corrected formula:</div>
+  </div>
+
+  <div class="formula-block">
+    <div class="formula-row">
+      <span class="cb chk-box"></span>
+      <div style="flex:1">
+        <div class="title">3.3  Density Altitude (DA) &mdash; output: ft</div>
+        <div class="mono">DA = PA + 120 × (OAT − ISA_TEMP)</div>
+        <div class="vars">variables: <i>pa</i> (ft), <i>oat</i> (°C), <i>isa</i> (°C)</div>
+      </div>
+    </div>
+    <div class="remarks-long">Remarks / Corrected formula:</div>
+  </div>
+
+  <div class="formula-block">
+    <div class="formula-row">
+      <span class="cb chk-box"></span>
+      <div style="flex:1">
+        <div class="title">3.4  Absolute Temperature &mdash; output: Kelvin</div>
+        <div class="mono">ABS_TEMP = 273 + OAT</div>
+        <div class="vars">variables: <i>oat</i> (°C)</div>
+      </div>
+    </div>
+    <div class="remarks-long">Remarks / Corrected formula:</div>
+  </div>
+
+  <div class="formula-block">
+    <div class="formula-row">
+      <span class="cb chk-box"></span>
+      <div style="flex:1">
+        <div class="title">3.5  All Up Weight (AUW) &mdash; output: lb</div>
+        <div class="mono">AUW = ac_weight + (crew × 2.2) + (fuel × 0.775 × 2.2) + (add_load × 2.2) + (load × 2.2)</div>
+        <div class="vars">
+          variables: <i>ac_weight</i> (lb), <i>crew</i> (kg), <i>fuel</i> (litres), <i>add_load</i> (kg), <i>load</i> (kg)<br>
+          factors: 2.2 = kg→lb · 0.775 = aviation-fuel density (kg / litre)
+        </div>
+      </div>
+    </div>
+    <div class="remarks-long">Remarks / Corrected formula:</div>
+  </div>
+
+  <div class="formula-block">
+    <div class="formula-row">
+      <span class="cb chk-box"></span>
+      <div style="flex:1">
+        <div class="title">3.6  Power Available (Max Pwr) &mdash; output: fraction 0..1 (capped at 1.0)</div>
+        <div class="mono">POWER_AVAIL = min(1.0, ((DA / 660) × 0.01) + 0.75)</div>
+        <div class="vars">variables: <i>density_alt</i> (ft)</div>
+      </div>
+    </div>
+    <div class="remarks-long">Remarks / Corrected formula:</div>
+  </div>
+
+  <div class="formula-block">
+    <div class="formula-row">
+      <span class="cb chk-box"></span>
+      <div style="flex:1">
+        <div class="title">3.7  Power Required (Hover Pwr) &mdash; output: fraction</div>
+        <div class="mono">POWER_REQ = (AUW / 6600) × (1013 / QNH) × (ABS_TEMP / 288)</div>
+        <div class="vars">variables: <i>auw</i> (lb), <i>qnh</i> (mb), <i>abs_temp</i> (K)</div>
+      </div>
+    </div>
+    <div class="remarks-long">Remarks / Corrected formula:</div>
+  </div>
+
+  <!-- ============ SECTION 4: DERIVED QUANTITIES ============ -->
+  <h2>4. Derived Quantities &amp; Presentation</h2>
+  <table>
+    <thead><tr>
+      <th class="chk">✓</th><th>Quantity</th><th style="width:140px">Unit</th>
+      <th style="width:240px">Formula</th><th>Remarks</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="chk"><span class="chk-box"></span></td>
+        <td>Power Balance %</td><td>%</td>
+        <td><span class="mono">(Pwr_Avail − Pwr_Req) / Pwr_Avail × 100</span></td>
+        <td class="remark"></td>
+      </tr>
+      <tr>
+        <td class="chk"><span class="chk-box"></span></td>
+        <td>AUW Margin</td><td>lb</td>
+        <td><span class="mono">MAUW − AUW</span></td>
+        <td class="remark"></td>
+      </tr>
+      <tr>
+        <td class="chk"><span class="chk-box"></span></td>
+        <td>Payload Margin</td><td>lb</td>
+        <td><span class="mono">min(AUW_Margin, AUW × pwr_headroom)</span></td>
+        <td class="remark"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============ SECTION 5: FIT-TO-FLY THRESHOLDS ============ -->
+  <h2>5. Fit-to-Fly Thresholds (0.01 precision)</h2>
+  <table>
+    <thead><tr>
+      <th class="chk">✓</th><th>Rule</th><th>Condition for <b>NOT FIT</b></th>
+      <th>Remarks / Corrected rule</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="chk"><span class="chk-box"></span></td>
+        <td>Weight check</td>
+        <td><span class="mono">AUW − MAUW > 0.01 lb</span></td>
+        <td class="remark"></td>
+      </tr>
+      <tr>
+        <td class="chk"><span class="chk-box"></span></td>
+        <td>Power check</td>
+        <td><span class="mono">POWER_REQ − POWER_AVAIL > 0.01</span></td>
+        <td class="remark"></td>
+      </tr>
+      <tr>
+        <td class="chk"><span class="chk-box"></span></td>
+        <td>Service ceiling</td>
+        <td><span class="mono">DA > 18 000 ft</span></td>
+        <td class="remark"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============ SECTION 6: SAMPLE CALCULATIONS ============ -->
+  <h2>6. Sample Calculations (please verify)</h2>
+  <div class="two-col">
+    <table>
+      <thead><tr><th colspan="2">Case A · Chetak, SL ISA</th></tr></thead>
+      <tbody>
+        <tr><td><b>Inputs</b></td><td>Elev 0 ft · QNH 1013 · Temp 15 °C · AC 2 645 lb · Crew 180 kg · Fuel 575 L · Load 75 kg · Add 0</td></tr>
+        <tr><td>PA</td><td>0 ft</td></tr>
+        <tr><td>ISA Temp</td><td>15 °C</td></tr>
+        <tr><td>DA</td><td>0 ft</td></tr>
+        <tr><td>Abs Temp</td><td>288 K</td></tr>
+        <tr><td>AUW</td><td>4 186.38 lb</td></tr>
+        <tr><td>Power Available</td><td>0.750</td></tr>
+        <tr><td>Power Required</td><td>0.634</td></tr>
+        <tr><td>Status</td><td><b>FIT</b> (+15 %)</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th colspan="2">Case B · Chetak, 10 000 ft · 30 °C</th></tr></thead>
+      <tbody>
+        <tr><td><b>Inputs</b></td><td>Elev 10 000 ft · QNH 1013 · Temp 30 °C · AC 2 645 lb · Crew 180 kg · Fuel 575 L · Load 200 kg · Add 0</td></tr>
+        <tr><td>PA</td><td>10 000 ft</td></tr>
+        <tr><td>ISA Temp</td><td>−5 °C</td></tr>
+        <tr><td>DA</td><td>14 200 ft</td></tr>
+        <tr><td>Abs Temp</td><td>303 K</td></tr>
+        <tr><td>AUW</td><td>4 461.38 lb</td></tr>
+        <tr><td>Power Available</td><td>0.965</td></tr>
+        <tr><td>Power Required</td><td>0.711</td></tr>
+        <tr><td>Status</td><td><b>FIT</b> (+26 %)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="remarks-long" style="margin-top:10px">Overall remarks on sample calculations:</div>
+
+  <!-- ============ SECTION 7: OVERALL REVIEW ============ -->
+  <h2>7. Overall Review Comments</h2>
+  <div class="remarks-long" style="min-height:80px"></div>
+
+  <div class="sig">
+    <div>
+      <div class="line"></div>
+      <div class="label">Reviewer Signature</div>
+    </div>
+    <div>
+      <div class="line"></div>
+      <div class="label">Date</div>
+    </div>
+  </div>
+
+  <div class="foot">HAL Helicopter Performance App · Calculation Review Sheet · generated from <span class="mono">src/config/logic.js</span></div>
+</div>
+</body>
+</html>
