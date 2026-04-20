@@ -86,11 +86,11 @@ export default function Settings() {
   return (
     <SafeAreaView style={styles.root} edges={['top']} testID="settings-screen">
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn} testID="back-btn">
+        <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn} hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }} testID="back-btn">
           <ChevronLeft size={22} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Configuration</Text>
-        <TouchableOpacity onPress={reset} style={styles.headerBtn} testID="reset-config-btn">
+        <TouchableOpacity onPress={reset} style={styles.headerBtn} hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }} testID="reset-config-btn">
           <RotateCcw size={18} color="#fff" />
         </TouchableOpacity>
       </View>

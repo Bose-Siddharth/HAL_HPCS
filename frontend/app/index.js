@@ -22,10 +22,10 @@ export default function Landing() {
       <ScrollView contentContainerStyle={styles.scroll} bounces={false}>
         <View style={styles.skyPanel}>
           <View style={styles.topBar}>
-            <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/reports')} testID="open-reports-btn">
+            <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/reports')} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }} testID="open-reports-btn">
               <FolderClock size={20} color="#fff" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/settings')} testID="open-settings-btn">
+            <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/settings')} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }} testID="open-settings-btn">
               <SettingsIcon size={20} color="#fff" />
             </TouchableOpacity>
           </View>

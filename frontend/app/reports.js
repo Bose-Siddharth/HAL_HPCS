@@ -34,17 +34,9 @@ export default function Reports() {
     refresh();
   };
 
-  const doDelete = (id) => {
-    // Use a custom cross-platform modal — Alert.alert callbacks don't fire on web.
-    if (Platform.OS === 'web') {
-      setConfirmId(id);
-    } else {
-      Alert.alert('Delete report?', 'This cannot be undone.', [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => performDelete(id) },
-      ]);
-    }
-  };
+  // Use custom modal on ALL platforms — Alert.alert callbacks are unreliable
+  // on web and some Android WebView contexts.
+  const doDelete = (id) => setConfirmId(id);
 
   const doShare = async (r) => {
     try {
@@ -57,7 +49,7 @@ export default function Reports() {
   return (
     <SafeAreaView style={styles.root} edges={['top']} testID="reports-screen">
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn} testID="back-btn">
+        <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn} hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }} testID="back-btn">
           <ChevronLeft size={22} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Saved Reports</Text>

@@ -3,8 +3,10 @@ import * as Sharing from 'expo-sharing';
 import { Platform } from 'react-native';
 
 /**
- * Generates a professional HAL Report PDF from the calculation payload
- * and opens the native share sheet.
+ * Generates a professional HAL Report PDF from the calculation payload.
+ * - Native (iOS/Android): uses expo-print → expo-sharing share sheet.
+ * - Web: opens a new tab with the report and triggers the browser print dialog
+ *   (the user can "Save as PDF" from there). expo-print is not reliable on web.
  */
 export const generateAndSharePdf = async (report) => {
   const name = report?.name || 'HAL_Report';
@@ -15,14 +17,19 @@ export const generateAndSharePdf = async (report) => {
   const units = report?.units || { altitude: 'ft', temperature: 'C', weight: 'kg', pressure: 'hPa' };
 
   const statusColor = outputs.status === 'FIT' ? '#22C55E' : '#EF4444';
-  const statusText = outputs.status === 'FIT' ? 'WITHIN LIMITS / FIT TO FLY' : 'LIMIT EXCEEDED / NOT FIT TO FLY';
-  const reasonsList = (outputs.reasons || []).map((r) => `<li>${r}</li>`).join('') || '<li>All parameters within safe envelope.</li>';
+  const statusText = outputs.status === 'FIT'
+    ? 'WITHIN LIMITS / FIT TO FLY'
+    : 'LIMIT EXCEEDED / NOT FIT TO FLY';
+  const reasonsList = (outputs.reasons || [])
+    .map((r) => `<li>${r}</li>`)
+    .join('') || '<li>All parameters within safe envelope.</li>';
 
   const html = `
   <!DOCTYPE html>
   <html>
   <head>
     <meta charset="utf-8"/>
+    <title>${name}</title>
     <style>
       body { font-family: -apple-system, Helvetica, Arial, sans-serif; color:#0F172A; padding:32px; }
       .header { border-bottom: 4px solid #1EA7E8; padding-bottom: 12px; margin-bottom: 18px; }
@@ -34,11 +41,12 @@ export const generateAndSharePdf = async (report) => {
       td, th { padding:8px 10px; border-bottom: 1px solid #E2E8F0; text-align:left; }
       th { background:#F1F5F9; font-weight:700; }
       .grid { display:flex; flex-wrap: wrap; gap: 10px; }
-      .card { flex:1 1 45%; border:1px solid #E2E8F0; border-radius:10px; padding:12px; }
+      .card { flex:1 1 45%; border:1px solid #E2E8F0; border-radius:10px; padding:12px; box-sizing: border-box; }
       .card .k { font-size: 11px; color:#64748B; text-transform:uppercase; letter-spacing:1px; }
       .card .v { font-size: 22px; font-weight:800; color:#0F172A; }
       .foot { margin-top: 36px; font-size: 10px; color:#94A3B8; border-top:1px solid #E2E8F0; padding-top:8px; }
       ul { margin: 4px 0 0 18px; }
+      @media print { body { padding: 18px; } }
     </style>
   </head>
   <body>
@@ -47,7 +55,6 @@ export const generateAndSharePdf = async (report) => {
       <div class="sub">Hindustan Aeronautics Limited &middot; Helicopter Performance System</div>
       <div class="sub">Report: <b>${name}</b> &middot; Generated: ${new Date(createdAt).toLocaleString()}</div>
     </div>
-
     <div class="chip">${statusText}</div>
 
     <h2>Aircraft & Environment</h2>
@@ -83,32 +90,54 @@ export const generateAndSharePdf = async (report) => {
   </body>
   </html>`;
 
-  const printed = await Print.printToFileAsync({ html, base64: false });
-  const uri = printed && printed.uri ? printed.uri : null;
-  if (!uri) {
-    throw new Error('Failed to generate PDF file.');
-  }
-
+  /* -------- WEB: open new tab + browser print dialog (reliable fallback) -------- */
   if (Platform.OS === 'web') {
-    if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return null;
+    const win = window.open('', '_blank');
+    if (!win) {
+      // Popup blocked — download as HTML file instead
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = uri;
-      a.download = `${name}.pdf`;
+      a.href = url;
+      a.download = `${name}.html`;
       document.body.appendChild(a);
       a.click();
       a.remove();
+      URL.revokeObjectURL(url);
+      return url;
     }
-    return uri;
+    win.document.open();
+    win.document.write(html);
+    win.document.close();
+    // Allow layout to render, then trigger print so user can "Save as PDF"
+    setTimeout(() => {
+      try { win.focus(); win.print(); } catch { /* ignore */ }
+    }, 500);
+    return 'web-print';
   }
 
+  /* -------- NATIVE: expo-print + expo-sharing -------- */
   try {
-    const canShare = await Sharing.isAvailableAsync();
-    if (canShare) {
-      await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'Share HAL Report' });
+    const printed = await Print.printToFileAsync({ html, base64: false });
+    const uri = printed && printed.uri ? printed.uri : null;
+    if (!uri) throw new Error('Print returned no file URI');
+
+    try {
+      const canShare = await Sharing.isAvailableAsync();
+      if (canShare) {
+        await Sharing.shareAsync(uri, {
+          mimeType: 'application/pdf',
+          dialogTitle: 'Share HAL Report',
+          UTI: 'com.adobe.pdf',
+        });
+      }
+    } catch (e) {
+      // Share cancel / unavailable — PDF file is still saved
+      console.warn('Sharing cancelled or unavailable:', e);
     }
+    return uri;
   } catch (e) {
-    // Sharing user-cancel or unavailable — not fatal; PDF file was generated.
-    console.warn('Sharing failed:', e);
+    throw new Error(`PDF generation failed: ${String(e?.message || e)}`);
   }
-  return uri;
 };

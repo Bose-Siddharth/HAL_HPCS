@@ -61,11 +61,11 @@ export default function Calculations() {
   return (
     <SafeAreaView style={styles.root} edges={['top']} testID="calculations-screen">
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn} testID="back-btn">
+        <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn} hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }} testID="back-btn">
           <ChevronLeft size={22} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Helicopter Performance System</Text>
-        <TouchableOpacity onPress={() => router.push('/settings')} style={styles.headerBtn} testID="header-settings-btn">
+        <TouchableOpacity onPress={() => router.push('/settings')} style={styles.headerBtn} hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }} testID="header-settings-btn">
           <SettingsIcon size={18} color="#fff" />
         </TouchableOpacity>
       </View>
