@@ -59,16 +59,16 @@ export const generateAndSharePdf = async (report) => {
 
     <h2>Aircraft & Environment</h2>
     <table>
-      <tr><th>Aircraft Type</th><td>${aircraft.name || '-'}</td><th>MAUW</th><td>${aircraft.mauw || '-'} kg</td></tr>
-      <tr><th>Elevation</th><td>${inputs.elevation ?? '-'} ft</td><th>QNH</th><td>${inputs.qnh ?? '-'} hPa</td></tr>
-      <tr><th>Temperature (OAT)</th><td>${inputs.temperature ?? '-'} °C</td><th>Rated Power</th><td>${aircraft.ratedPowerSHP || '-'} shp</td></tr>
+      <tr><th>Aircraft Type</th><td>${aircraft.name || '-'}</td><th>MAUW</th><td>${aircraft.mauw || '-'} lb</td></tr>
+      <tr><th>Elevation</th><td>${inputs.elevation ?? '-'} ft</td><th>QNH</th><td>${inputs.qnh ?? '-'} mb</td></tr>
+      <tr><th>Temperature</th><td>${inputs.temperature ?? '-'} °C</td><th>AC Empty</th><td>${aircraft.emptyWeight || '-'} lb</td></tr>
     </table>
 
-    <h2>Weights (kg)</h2>
+    <h2>Weights & Load</h2>
     <table>
-      <tr><th>AC Empty</th><td>${inputs.acWeight ?? '-'}</td><th>Crew</th><td>${inputs.crewWeight ?? '-'}</td></tr>
-      <tr><th>Fuel</th><td>${inputs.fuel ?? '-'}</td><th>Load</th><td>${inputs.payload ?? '-'}</td></tr>
-      <tr><th>Additional Load</th><td>${inputs.additionalLoad ?? '-'}</td><th>All Up Weight</th><td><b>${outputs.AUW ?? '-'}</b></td></tr>
+      <tr><th>AC Weight</th><td>${inputs.acWeight ?? '-'} lb</td><th>Crew</th><td>${inputs.crewWeight ?? '-'} kg</td></tr>
+      <tr><th>Fuel</th><td>${inputs.fuel ?? '-'} L</td><th>Load</th><td>${inputs.payload ?? '-'} kg</td></tr>
+      <tr><th>Additional Load</th><td>${inputs.additionalLoad ?? '-'} kg</td><th>All Up Weight</th><td><b>${outputs.AUW ?? '-'} lb</b></td></tr>
     </table>
 
     <h2>Computed Performance</h2>
@@ -76,11 +76,11 @@ export const generateAndSharePdf = async (report) => {
       <div class="card"><div class="k">Pressure Altitude</div><div class="v">${outputs.PA ?? '-'} ft</div></div>
       <div class="card"><div class="k">ISA Temperature</div><div class="v">${outputs.ISA_TEMP ?? '-'} °C</div></div>
       <div class="card"><div class="k">Density Altitude</div><div class="v">${outputs.DENSITY_ALT ?? '-'} ft</div></div>
-      <div class="card"><div class="k">Air Density</div><div class="v">${outputs.DENSITY ?? '-'} kg/m³</div></div>
-      <div class="card"><div class="k">AB Temperature</div><div class="v">${outputs.AB_TEMP ?? '-'} °C</div></div>
-      <div class="card"><div class="k">All Up Weight</div><div class="v">${outputs.AUW ?? '-'} kg</div></div>
-      <div class="card"><div class="k">Power Available</div><div class="v">${outputs.POWER_AVAIL ?? '-'} shp</div></div>
-      <div class="card"><div class="k">Power Required</div><div class="v">${outputs.POWER_REQ ?? '-'} shp</div></div>
+      <div class="card"><div class="k">Absolute Temperature</div><div class="v">${outputs.ABS_TEMP ?? '-'} K</div></div>
+      <div class="card"><div class="k">All Up Weight</div><div class="v">${outputs.AUW ?? '-'} lb</div></div>
+      <div class="card"><div class="k">Power Available</div><div class="v">${outputs.POWER_AVAIL ?? '-'}</div></div>
+      <div class="card"><div class="k">Power Required</div><div class="v">${outputs.POWER_REQ ?? '-'}</div></div>
+      <div class="card"><div class="k">Power Balance</div><div class="v">${outputs.POWER_BALANCE_PCT ?? '-'} %</div></div>
     </div>
 
     <h2>Fit-to-Fly Evaluation</h2>

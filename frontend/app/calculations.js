@@ -105,7 +105,7 @@ export default function Calculations() {
 
           <InputRow
             Icon={Mountain}
-            label="Pressure Altitude / Elevation"
+            label="Elevation"
             value={display(inputs.elevation, units.altitude)}
             unit={units.altitude}
             unitOptions={['ft', 'm']}
@@ -117,72 +117,63 @@ export default function Calculations() {
             Icon={Gauge}
             label="QNH"
             value={display(inputs.qnh, units.pressure)}
-            unit={units.pressure}
+            unit={units.pressure === 'hPa' ? 'mb' : units.pressure}
             unitOptions={['hPa', 'inHg']}
+            unitLabels={{ hPa: 'mb', inHg: 'inHg' }}
             onUnitChange={(u) => setUnit('pressure', u)}
-            onPress={() => openDrawer('qnh', 'QNH', units.pressure, display(inputs.qnh, units.pressure))}
+            onPress={() => openDrawer('qnh', 'QNH', units.pressure === 'hPa' ? 'mb' : units.pressure, display(inputs.qnh, units.pressure))}
             testID="input-qnh"
           />
           <InputRow
             Icon={Thermometer}
-            label="Outside Air Temperature"
+            label="Temperature"
             value={display(inputs.temperature, units.temperature)}
             unit={units.temperature === 'C' ? '°C' : '°F'}
             unitOptions={['C', 'F']}
             unitLabels={{ C: '°C', F: '°F' }}
             onUnitChange={(u) => setUnit('temperature', u)}
-            onPress={() => openDrawer('temperature', 'OAT', units.temperature === 'C' ? 'C' : 'F', display(inputs.temperature, units.temperature))}
+            onPress={() => openDrawer('temperature', 'Temperature', units.temperature === 'C' ? 'C' : 'F', display(inputs.temperature, units.temperature))}
             testID="input-temperature"
           />
           <InputRow
             Icon={Weight}
-            label="AC Empty Weight"
-            value={display(inputs.acWeight, units.weight)}
-            unit={units.weight}
-            unitOptions={['kg', 'lb']}
-            onUnitChange={(u) => setUnit('weight', u)}
-            onPress={() => openDrawer('acWeight', 'AC Weight', units.weight, display(inputs.acWeight, units.weight))}
+            label="AC Weight"
+            value={display(inputs.acWeight, 'lb')}
+            unit="lb"
+            onPress={() => openDrawer('acWeight', 'AC Weight', 'lb', display(inputs.acWeight, 'lb'))}
             testID="input-ac-weight"
           />
           <InputRow
             Icon={User}
             label="Crew Weight"
-            value={display(inputs.crewWeight, units.weight)}
-            unit={units.weight}
-            unitOptions={['kg', 'lb']}
-            onUnitChange={(u) => setUnit('weight', u)}
-            onPress={() => openDrawer('crewWeight', 'Crew Weight', units.weight, display(inputs.crewWeight, units.weight))}
+            value={display(inputs.crewWeight, 'kg')}
+            unit="kg"
+            onPress={() => openDrawer('crewWeight', 'Crew Weight', 'kg', display(inputs.crewWeight, 'kg'))}
             testID="input-crew"
           />
           <InputRow
             Icon={Fuel}
-            label="Fuel Onboard"
-            value={display(inputs.fuel, units.weight)}
-            unit={units.weight}
-            unitOptions={['kg', 'lb']}
-            onUnitChange={(u) => setUnit('weight', u)}
-            onPress={() => openDrawer('fuel', 'Fuel', units.weight, display(inputs.fuel, units.weight))}
+            label="Fuel"
+            value={display(inputs.fuel, 'L')}
+            unit="L"
+            onPress={() => openDrawer('fuel', 'Fuel', 'L', display(inputs.fuel, 'L'))}
             testID="input-fuel"
           />
           <InputRow
             Icon={Package}
-            label="Load"
-            value={display(inputs.payload, units.weight)}
-            unit={units.weight}
-            unitOptions={['kg', 'lb']}
-            onUnitChange={(u) => setUnit('weight', u)}
-            onPress={() => openDrawer('payload', 'Load', units.weight, display(inputs.payload, units.weight))}
-            testID="input-payload"
+            label="Additional Load"
+            value={display(inputs.additionalLoad, 'kg')}
+            unit="kg"
+            onPress={() => openDrawer('additionalLoad', 'Additional Load', 'kg', display(inputs.additionalLoad, 'kg'))}
+            testID="input-add-load"
           />
           <InputRow
             Icon={Package}
-            label="Additional Load"
-            value={display(inputs.additionalLoad, units.weight)}
-            unit={units.weight}
-            unitOptions={['kg', 'lb']}
-            onUnitChange={(u) => setUnit('weight', u)}
-            onPress={() => openDrawer('additionalLoad', 'Additional Load', units.weight, display(inputs.additionalLoad, units.weight))}
-            testID="input-add-load"
+            label="Load"
+            value={display(inputs.payload, 'kg')}
+            unit="kg"
+            onPress={() => openDrawer('payload', 'Load', 'kg', display(inputs.payload, 'kg'))}
+            testID="input-payload"
           />
 
           {/* Live preview of outputs */}
@@ -191,11 +182,11 @@ export default function Calculations() {
             <PreviewCell k="PA" v={`${outputs.PA} ft`} />
             <PreviewCell k="ISA Temp" v={`${outputs.ISA_TEMP} °C`} />
             <PreviewCell k="Density Alt" v={`${outputs.DENSITY_ALT} ft`} />
-            <PreviewCell k="Density" v={`${outputs.DENSITY} kg/m³`} />
-            <PreviewCell k="AB Temp" v={`${outputs.AB_TEMP} °C`} />
-            <PreviewCell k="AUW" v={`${outputs.AUW} kg`} />
-            <PreviewCell k="Power Avail" v={`${outputs.POWER_AVAIL} shp`} />
-            <PreviewCell k="Power Req" v={`${outputs.POWER_REQ} shp`} />
+            <PreviewCell k="Abs Temp" v={`${outputs.ABS_TEMP} K`} />
+            <PreviewCell k="AUW" v={`${outputs.AUW} lb`} />
+            <PreviewCell k="Power Avail" v={`${outputs.POWER_AVAIL}`} />
+            <PreviewCell k="Power Req" v={`${outputs.POWER_REQ}`} />
+            <PreviewCell k="Pwr Balance" v={`${outputs.POWER_BALANCE_PCT}%`} />
           </View>
         </ScrollView>
 

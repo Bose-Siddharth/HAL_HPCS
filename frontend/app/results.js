@@ -135,11 +135,11 @@ export default function Results() {
         {/* Metric cards */}
         <View style={styles.metricGrid}>
           <Metric
-            Icon={Scale} label="AUW Capability" value={aircraft.mauw.toLocaleString()} unit="kg"
+            Icon={Scale} label="AUW Capability" value={aircraft.mauw.toLocaleString()} unit="lb"
             color={COLORS.text} testID="metric-auw-cap"
           />
           <Metric
-            Icon={Package} label="Payload" value={`${Math.round((inputs.payload / outputs.AUW) * 1000) / 10}`} unit="%"
+            Icon={Package} label="AUW" value={`${outputs.AUW.toLocaleString()}`} unit="lb"
             color={COLORS.text} testID="metric-payload-pct"
           />
           <Metric
@@ -150,7 +150,7 @@ export default function Results() {
             testID="metric-power-balance"
           />
           <Metric
-            Icon={Dumbbell} label="Payload Margin" value={`${outputs.PAYLOAD_MARGIN}`} unit="kg"
+            Icon={Dumbbell} label="Payload Margin" value={`${outputs.PAYLOAD_MARGIN}`} unit="lb"
             color={COLORS.text} testID="metric-payload-margin"
           />
         </View>
@@ -196,17 +196,17 @@ export default function Results() {
           )}
         </View>
 
-        {/* Detail grid — all 8 outputs */}
+        {/* Detail grid — all 7 outputs */}
         <Text style={[styles.sectionTitle, { marginTop: SPACING.lg }]}>All Calculations</Text>
         <View style={styles.detailGrid}>
           <DetailCell k="Pressure Altitude" v={`${outputs.PA} ft`} />
           <DetailCell k="ISA Temperature" v={`${outputs.ISA_TEMP} °C`} />
           <DetailCell k="Density Altitude" v={`${outputs.DENSITY_ALT} ft`} />
-          <DetailCell k="Air Density" v={`${outputs.DENSITY} kg/m³`} />
-          <DetailCell k="AB Temperature" v={`${outputs.AB_TEMP} °C`} />
-          <DetailCell k="All Up Weight" v={`${outputs.AUW} kg`} />
-          <DetailCell k="Power Available" v={`${outputs.POWER_AVAIL} shp`} />
-          <DetailCell k="Power Required" v={`${outputs.POWER_REQ} shp`} />
+          <DetailCell k="Absolute Temperature" v={`${outputs.ABS_TEMP} K`} />
+          <DetailCell k="All Up Weight" v={`${outputs.AUW} lb`} />
+          <DetailCell k="Power Available" v={`${outputs.POWER_AVAIL}`} />
+          <DetailCell k="Power Required" v={`${outputs.POWER_REQ}`} />
+          <DetailCell k="Power Balance" v={`${outputs.POWER_BALANCE_PCT}%`} />
         </View>
 
         {/* Save / Share row */}

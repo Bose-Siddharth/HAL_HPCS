@@ -36,7 +36,7 @@ export default function Settings() {
     for (const meta of FORMULA_META) {
       try {
         // eslint-disable-next-line no-new-func
-        new Function('elevation', 'qnh', 'oat', 'ac_weight', 'crew', 'fuel', 'payload', 'add_load', 'mauw', 'rated_power', 'baseline_power_req', 'pa', 'isa', 'density_alt', 'auw', `return (${localF[meta.key]});`);
+        new Function('elevation', 'qnh', 'oat', 'ac_weight', 'crew', 'fuel', 'load', 'add_load', 'mauw', 'pa', 'isa', 'density_alt', 'abs_temp', 'auw', `return (${localF[meta.key]});`);
       } catch {
         invalid.push(meta.label);
       }
@@ -133,16 +133,14 @@ export default function Settings() {
               <View key={id} style={styles.card}>
                 <Text style={styles.acName}>{ac.name}</Text>
                 <View style={styles.grid}>
-                  <NumField label="Empty Weight (kg)" value={ac.emptyWeight} onChange={(v) => setACField(id, 'emptyWeight', v)} testID={`ac-${id}-empty`} />
-                  <NumField label="MAUW (kg)" value={ac.mauw} onChange={(v) => setACField(id, 'mauw', v)} testID={`ac-${id}-mauw`} />
-                  <NumField label="Rated Power (shp)" value={ac.ratedPowerSHP} onChange={(v) => setACField(id, 'ratedPowerSHP', v)} testID={`ac-${id}-rated`} />
-                  <NumField label="Baseline Pwr Req (shp)" value={ac.baselinePowerReqSHP} onChange={(v) => setACField(id, 'baselinePowerReqSHP', v)} testID={`ac-${id}-basereq`} />
+                  <NumField label="Empty Weight (lb)" value={ac.emptyWeight} onChange={(v) => setACField(id, 'emptyWeight', v)} testID={`ac-${id}-empty`} />
+                  <NumField label="MAUW (lb)" value={ac.mauw} onChange={(v) => setACField(id, 'mauw', v)} testID={`ac-${id}-mauw`} />
                   <NumField label="Default Crew (kg)" value={ac.defaultCrew} onChange={(v) => setACField(id, 'defaultCrew', v)} testID={`ac-${id}-crew`} />
-                  <NumField label="Default Fuel (kg)" value={ac.defaultFuel} onChange={(v) => setACField(id, 'defaultFuel', v)} testID={`ac-${id}-fuel`} />
-                  <NumField label="Default Payload (kg)" value={ac.defaultPayload} onChange={(v) => setACField(id, 'defaultPayload', v)} testID={`ac-${id}-payload`} />
+                  <NumField label="Default Fuel (L)" value={ac.defaultFuel} onChange={(v) => setACField(id, 'defaultFuel', v)} testID={`ac-${id}-fuel`} />
+                  <NumField label="Default Load (kg)" value={ac.defaultPayload} onChange={(v) => setACField(id, 'defaultPayload', v)} testID={`ac-${id}-payload`} />
                   <NumField label="Default Add Load (kg)" value={ac.defaultAddLoad} onChange={(v) => setACField(id, 'defaultAddLoad', v)} testID={`ac-${id}-addload`} />
                   <NumField label="Default Elevation (ft)" value={ac.defaultElevation} onChange={(v) => setACField(id, 'defaultElevation', v)} testID={`ac-${id}-elev`} />
-                  <NumField label="Default QNH (hPa)" value={ac.defaultQNH} onChange={(v) => setACField(id, 'defaultQNH', v)} testID={`ac-${id}-qnh`} />
+                  <NumField label="Default QNH (mb)" value={ac.defaultQNH} onChange={(v) => setACField(id, 'defaultQNH', v)} testID={`ac-${id}-qnh`} />
                   <NumField label="Default Temp (°C)" value={ac.defaultTemp} onChange={(v) => setACField(id, 'defaultTemp', v)} testID={`ac-${id}-temp`} />
                 </View>
               </View>
